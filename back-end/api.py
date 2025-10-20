@@ -11,3 +11,16 @@ def home():
 def criar_produto(nome:str, categoria:str, preco:float, quantidade:int):
     adicionar_produto(nome, categoria, preco, quantidade)
     return {"mensagem": "produto adicionado com sucesso!"}
+
+@app.get("/produtos")
+def exibir_todos():
+    produtos = listar_todos()
+    lista = []
+    for produto in produtos:
+        lista.append({
+            "id": produto[0],
+            "nome": produto[1],
+            "categoria": produto[2],
+            "preco": produto[3],
+            "quantidade":produto[4]})
+    return {"produtos": lista}
