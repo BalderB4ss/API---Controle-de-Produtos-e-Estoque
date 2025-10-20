@@ -81,3 +81,15 @@ def excluir_produto(id):
         finally:
             cursor.close()
             conexao.close()
+
+def buscar_produto(id):
+    conexao, cursor = conectar()
+    if conexao:
+        try:
+            cursor.execute("SELECT * FROM produtos WHERE id= %s", (id,))
+            return cursor.fetchone()
+        except Exception as error:
+            print(f"Erro ao tentar listar produto: {error}")
+        finally:
+            cursor.close()
+            conexao.close()
