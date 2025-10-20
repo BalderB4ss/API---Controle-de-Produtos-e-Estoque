@@ -56,3 +56,16 @@ def atualizar_preco(id,preco,):
         finally:
             cursor.close()
             conexao.close()
+
+def atualizar_quantidade(id,quantidade,):
+    conexao, cursor = conectar()
+    if conexao:
+        try:
+            cursor.execute("UPDATE produtos SET quantidade = %s WHERE id = %s",
+                           (quantidade,id))
+            conexao.commit()
+        except Exception as error:
+            print(f"Erro ao tentar atualizar quantidade do produto: {error}")
+        finally:
+            cursor.close()
+            conexao.close()
