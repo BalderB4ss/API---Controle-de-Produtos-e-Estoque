@@ -43,3 +43,16 @@ def listar_todos():
         finally:
             cursor.close()
             conexao.close()
+
+def atualizar_preco(id,preco,):
+    conexao, cursor = conectar()
+    if conexao:
+        try:
+            cursor.execute("UPDATE produtos SET preco = %s WHERE id = %s",
+                           (preco,id))
+            conexao.commit()
+        except Exception as error:
+            print(f"Erro ao tentar atualizar preço do produto: {error}")
+        finally:
+            cursor.close()
+            conexao.close()
