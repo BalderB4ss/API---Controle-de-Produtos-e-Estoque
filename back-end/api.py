@@ -24,3 +24,8 @@ def exibir_todos():
             "preco": produto[3],
             "quantidade":produto[4]})
     return {"produtos": lista}
+
+@app.delete("/produtos")
+def apagar_produto(id:int):
+    excluir_produto(id)
+    return {"Mensagem": "Produto deletado com sucesso!"}
