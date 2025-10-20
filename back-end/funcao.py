@@ -81,4 +81,3 @@ def excluir_produto(id):
         finally:
             cursor.close()
             conexao.close()
-excluir_produto(1)
