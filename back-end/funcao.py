@@ -31,3 +31,15 @@ def adicionar_produto(nome, categoria, preco, quantidade):
         finally:
             cursor.close()
             conexao.close()
+ 
+def listar_todos():
+    conexao, cursor = conectar()
+    if conexao:
+        try:
+            cursor.execute("SELECT * FROM produtos ORDER BY id")
+            return cursor.fetchall()
+        except Exception as error:
+            print(f"Erro ao tentar listar produtos: {error}")
+        finally:
+            cursor.close()
+            conexao.close()
