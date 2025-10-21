@@ -3,9 +3,13 @@ import requests
 
 API_URL = "http://127.0.0.1:8000"
 
+response = requests.get(f"{API_URL}/estoque")
+if response.status_code == 200:
+    produtos = response.json().get("produtos", [])
+    ids = (linha["id"] for linha in produtos)
+
 st.set_page_config(page_title="Controle de Produtos e Estoque", page_icon="🚚")
 st.title("🚛 Controle de Produtos e Estoque")
-
 menu = st.sidebar.radio("Navegação", ["Catálogo","Adicionar Produto","Apagar Produto","Atualizar Produto"])
 if menu =="Catálogo":
     st.subheader("Todos os produtos disponíveis")
@@ -39,3 +43,24 @@ if menu == "Adicionar Produto":
             st.success("Produto adicionado com sucesso!")
         else:
             st.error("Erro ao adicionar o produto❗")
+
+if menu == "Apagar Produto":
+    st.subheader("❌ Apagar Produto ❌")
+    if ids:
+        escolha = st.selectbox("Escolha um produto para apagar",ids)
+        response = requests.get(f"{API_URL}/estoque")
+        if response.status_code == 200:
+            produtos = response.json().get("produtos",[])
+            produto_selecionado = next((linha for linha in produtos if linha["id"] == escolha), None)
+            if produto_selecionado:
+                st.dataframe([produto_selecionado])
+            else:
+                st.error("Erro ao buscar detalhes do produto")
+        if st.button("⚠Deletar⚠"):
+            response = requests.delete(f"{API_URL}/estoque/{escolha}")
+            if response.status_code == 200:
+                st.success("Sucessoo ao apagar produto!")
+            else:
+                st.error("Erro ao deletar produto❗")
+    else:
+        st.info("Nenhum produto disponível para deletar!")

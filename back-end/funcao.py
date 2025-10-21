@@ -18,7 +18,6 @@ quantidade INT
         finally:
             cursor.close()
             conexao.close()
-
 def adicionar_produto(nome, categoria, preco, quantidade):
     conexao, cursor = conectar()
     if conexao:
@@ -31,7 +30,7 @@ def adicionar_produto(nome, categoria, preco, quantidade):
         finally:
             cursor.close()
             conexao.close()
- 
+            
 def listar_todos():
     conexao, cursor = conectar()
     if conexao:
@@ -93,3 +92,4 @@ def buscar_produto(id):
         finally:
             cursor.close()
             conexao.close()
+criar_tabela()

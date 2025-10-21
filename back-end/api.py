@@ -25,12 +25,12 @@ def exibir_todos():
             "quantidade":produto[4]})
     return {"produtos": lista}
 
-@app.delete("/estoque")
+@app.delete("/estoque/{id}")
 def apagar_produto(id:int):
     excluir_produto(id)
     return {"Mensagem": "Produto deletado com sucesso!"}
 
-@app.put("/estoque/preco")
+@app.put("/estoque/{id}")
 def att_preco(id:int,preco:float):
     produto = buscar_produto(id)
     if produto:
