@@ -6,7 +6,7 @@ API_URL = "http://127.0.0.1:8000"
 response = requests.get(f"{API_URL}/estoque")
 if response.status_code == 200:
     produtos = response.json().get("produtos", [])
-    ids = (linha["id"] for linha in produtos)
+    ids = [linha["id"] for linha in produtos]
 
 st.set_page_config(page_title="Controle de Produtos e Estoque", page_icon="🚚")
 st.title("🚛 Controle de Produtos e Estoque")
@@ -30,7 +30,7 @@ if menu =="Catálogo":
     else:
         st.error("Erro ao acessar a API❗")
         
-if menu == "Adicionar Produto":
+elif menu == "Adicionar Produto":
     st.subheader("➕ Adicionar Produto ➕")
     nome = st.text_input("Nome do produto")
     categoria = st.text_input("Categoria do produto")
@@ -44,7 +44,7 @@ if menu == "Adicionar Produto":
         else:
             st.error("Erro ao adicionar o produto❗")
 
-if menu == "Apagar Produto":
+elif menu == "Apagar Produto":
     st.subheader("❌ Apagar Produto ❌")
     if ids:
         escolha = st.selectbox("Escolha o ID do produto para apagar",ids)
@@ -59,20 +59,20 @@ if menu == "Apagar Produto":
         if st.button("⚠Deletar⚠"):
             response = requests.delete(f"{API_URL}/estoque/{escolha}")
             if response.status_code == 200:
-                st.success("Sucessoo ao apagar produto!")
+                st.success("Sucesso ao apagar produto!")
             else:
                 st.error("Erro ao deletar produto❗")
     else:
         st.info("Nenhum produto disponível para deletar!")
 
-if menu == "Atualizar Produto":
-    aba1, aba2 = ["Preço", "Quantidade"]
-    if aba1:
+elif menu == "Atualizar Produto":
+    aba1, aba2 = st.tabs(["Preço", "Quantidade"])
+    with aba1:
         st.subheader("📦 Atualizar Preço do Produto 📦")
         if not ids:
             st.warning("Nenhum produto disponível para atualizar")
         else:
-            escolha = st.selectbox("Selecione o ID do produto para atualizar",ids)
+            escolha = st.selectbox("Selecione o ID do produto para atualizar",ids, key="select_preco")
             response = requests.get(f"{API_URL}/estoque")
             if response.status_code == 200:
                 produtos = response.json().get("produtos", [])
@@ -81,12 +81,36 @@ if menu == "Atualizar Produto":
                     st.dataframe([produto_selecionado])
                 else:
                     st.error("Erro ao buscar detalhes do produto")
-                preco = st.number_input("Novo preço", value=0.01, format="%.2f")
-                if st.button("Atualizar Produto ✔"):
+                preco = st.number_input("Novo preço", value=0.01, format="%.2f", key="input_preco")
+                if st.button("Atualizar Produto ✔", key="btn_preco"):
                     dados = {
                         "preco": preco,
                     }
                     response = requests.put(f"{API_URL}/estoque/{escolha}", params=dados)
+                    if response.status_code == 200:
+                        st.success("Produto atualizado com sucesso!")
+                    else:
+                        st.error("Erro ao atualizar produto❗")
+    with aba2:
+        st.subheader("📦 Atualizar Quantidade do Produto 📦")
+        if not ids:
+            st.warning("Nenhum produto disponível para atualizar")
+        else:
+            escolha = st.selectbox("Selecione o ID do produto para atualizar",ids, key="select_qtd")
+            response = requests.get(f"{API_URL}/estoque")
+            if response.status_code == 200:
+                produtos = response.json().get("produtos", [])
+                produto_selecionado = next((item for item in produtos if item["id"] == escolha), None)
+                if produto_selecionado:
+                    st.dataframe([produto_selecionado])
+                else:
+                    st.error("Erro ao buscar detalhes do produto")
+                quantidade = st.number_input("Nova quantidade", value=1, key="input_qtd")
+                if st.button("Atualizar Produto ✅",key="btn_qtd"):
+                    dados = {
+                        "quantidade": quantidade,
+                    }
+                    response = requests.put(f"{API_URL}/estoque/quantidade/{escolha}", params=dados)
                     if response.status_code == 200:
                         st.success("Produto atualizado com sucesso!")
                     else:

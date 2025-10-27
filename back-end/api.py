@@ -38,7 +38,7 @@ def att_preco(id:int,preco:float):
         return {"mensagem": "Produto atualizado com sucesso!"}
     return {"erro": "Produto não encontrado!"}
 
-@app.put("/estoque/quantidade")
+@app.put("/estoque/quantidade/{id}")
 def att_quantidade(id:int,quantidade:int):
     produto = buscar_produto(id)
     if produto:
